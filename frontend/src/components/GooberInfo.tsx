@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import "./GooberInfo.css";
 
 interface Props {
@@ -21,24 +22,33 @@ export default function GooberInfo({
   money,
   currentHealth,
 }: Props) {
-  // Whent he user tabs out this crashes out
-  setInterval(() => {
-    if (currentHealth <= 0) {
-      setXP(0);
-      setLevel(0);
-      setHealth(100);
-    } else if (currentXP == 100) {
-      setXP(0);
-      // Once this runs once, it gets really weird and runs a lot,
-      // the level continues to increase even thought he bar isn't filling in
-      setLevel(level + 1);
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      if (currentHealth <= 0) {
+        setXP(0);
+        setLevel(0);
+        setHealth(100);
+      } else if (currentXP === 100) {
+        setXP(0);
+        setLevel(level + 1);
+        setMoney(money + 10);
+      } else {
+        setXP(currentXP + 1);
+        setHealth(currentHealth - 0.1);
+      }
+    }, 1000);
 
-      setMoney(money + 10);
-    } else {
-      setXP(currentXP + 1);
-      setHealth(currentHealth - 0.1);
-    }
-  }, 1000);
+    return () => window.clearInterval(intervalId);
+  }, [
+    currentHealth,
+    currentXP,
+    level,
+    money,
+    setHealth,
+    setLevel,
+    setMoney,
+    setXP,
+  ]);
 
   return (
     <>
